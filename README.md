@@ -99,6 +99,12 @@ III. Steup Commands Sequence:
   11. UI olake will access through the web browser
 
   login -> admin/password
+
+  12. terminated all the create servies by single terraform command
+
+    - terraform destroy
+    
+
   
                                       
                                       
