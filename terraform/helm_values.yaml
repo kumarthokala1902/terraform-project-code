@@ -16,6 +16,6 @@ service:
 
 persistence:
   enabled: true
-  storageClass: "standard"   # or "gp2" if you’re on AWS
+  storageClass: "standard"  
   accessMode: ReadWriteOnce
   size: 10Gi
