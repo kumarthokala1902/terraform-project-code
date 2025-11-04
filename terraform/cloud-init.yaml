@@ -1,0 +1,42 @@
+#cloud-config
+package_update: true
+packages:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - gnupg
+  - lsb-release
+  - conntrack
+runcmd:
+  # 1) Install Docker
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmour -o /usr/share/keyrings/docker-archive-keyring.gpg
+  - echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list
+  - apt-get update
+  - apt-get install -y docker-ce docker-ce-cli containerd.io
+  - usermod -aG docker ubuntu
+
+  # 2) Install kubectl
+  - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+  - install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+  # 3) Install minikube
+  - curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+  - install minikube-linux-amd64 /usr/local/bin/minikube
+
+  # 4) Install helm
+  - curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+  # 5) Start Docker and Minikube (run as ubuntu)
+  - su - ubuntu -c "docker --version"
+  - su - ubuntu -c "minikube start --driver=docker --cpus=3 --memory=6144 --bootstrapper=kubeadm"
+  - su - ubuntu -c "minikube addons enable ingress"
+  - su - ubuntu -c "minikube addons enable storage-provisioner"
+
+  # 6) Make kubeconfig available for ubuntu user
+  - su - ubuntu -c "mkdir -p /home/ubuntu/.kube && sudo cp /etc/kubernetes/admin.conf /home/ubuntu/.kube/config || true"
+  - chown -R ubuntu:ubuntu /home/ubuntu/.kube || true
+
+  # 7) Add OLake helm repo (optional here; we'll do via Terraform Helm provider)
+  - su - ubuntu -c "helm repo add olake https://datazip-inc.github.io/olake-helm && helm repo update"
+
+final_message: "Cloud-init finished. Minikube should be running."

@@ -1,0 +1,21 @@
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+  hosts:
+    - host: olake.local
+      paths:
+        - path: /
+          pathType: Prefix
+
+service:
+  ui:
+    enabled: true
+    port: 8000
+    type: ClusterIP
+
+persistence:
+  enabled: true
+  storageClass: "standard"   # or "gp2" if you’re on AWS
+  accessMode: ReadWriteOnce
+  size: 10Gi
