@@ -13,13 +13,13 @@ II. Setup Instructions:
 
 1. Choosen the cloud provider as an aws
 2. Create main.tf file, output.tf, variables.tf and proividers.tf  variables.tf, helm_values.tf, cloud-init.yaml
-3. Without doing the hard code values and to secure the sencitive info i used the terraform concept to pass var values (ami_id, ssh_key_name, tfstate_bucket).
+3. Without doing the hardcode values and to secure the sensitive info i used the terraform variables concept to pass var values (ami_id, ssh_key_name, tfstate_bucket).
 
-4. on main.tf 
+On main.tf file:
 
-data "aws_vpc" "default" {
+4. data "aws_vpc" "default" {
   default = true
-}
+  }
 
 - Fetches the default AWS VPC & Subnets Automatically detects and uses your default VPC.
 
@@ -46,13 +46,13 @@ data "aws_vpc" "default" {
 
 8. helm_values.tf file:
   
-  - This YAML config enables an NGINX ingress so you can access the OLake UI through  olake.local.
+  - This YAML config enables an NGINX ingress so we can access the OLake UI through  olake.local.
   - It exposes the app’s UI service on port 8000 within the cluster using ClusterIP.
   - It also sets up persistent storage (10Gi) so data isn’t lost when pods restart.
 
 9. cloud_init.yaml file:
 
-  - Your user_data (cloud-init) must install Docker, kubectl, minikube, helm and start minikube. Example minimal cloud-init.yaml
+  - the user_data (cloud-init) must install Docker, kubectl, minikube, helm and start minikube. Example minimal cloud-init.yaml
  
 10. output.tf file:
 
@@ -62,7 +62,7 @@ data "aws_vpc" "default" {
 
 III. Steup Commands Sequence:
 
-  1. terraform validate (pre configure the syntax)
+  1. terraform validate (Verify the syntax)
 
   2. terraform init  -reconfigure -backend-config="bucket=terraform-state-olake"  -backend-config="key=firstKey"   -backend-config="region=us-east-1"
 
@@ -103,7 +103,7 @@ III. Steup Commands Sequence:
   12. terminated all the create servies by single terraform command
 
     - terraform destroy
-    
+
 
   
                                       
